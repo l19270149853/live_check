@@ -30,8 +30,8 @@ jobs:
 
       - name: Commit & push results
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "l19270149853"
+          git config user.email "362213335lkh@gmail.com"
           mkdir -p results
           cp valid.txt invalid.txt summary.txt results/ 2>/dev/null || true
           git add results/ valid.txt invalid.txt summary.txt 2>/dev/null || true
