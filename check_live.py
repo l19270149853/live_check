@@ -3,6 +3,7 @@
 直播源检测脚本
 从 https://10694.kstore.space/live/autoIP.txt 提取IP模板并生成实际地址进行检测
 """
+
 import re
 import requests
 import concurrent.futures
