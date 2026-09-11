@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write          # 允许 push 回仓库
+  contents: write
 
 jobs:
   check:
@@ -15,8 +15,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          persist-credentials: true   # 保留 token 用于 push
-          fetch-depth: 0              # 拉取完整历史，便于 rebase
+          persist-credentials: true
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -33,21 +33,18 @@ jobs:
         run: |
           git config user.name "l19270149853"
           git config user.email "362213335lkh@gmail.com"
-          mkdir -p results
-          cp valid.txt invalid.txt summary.txt results/ 2>/dev/null || true
-          git add results/ valid.txt invalid.txt summary.txt 2>/dev/null || true
-          git diff --cached --quiet || git commit -m "更新直播源检测结果 $(date -u +'%Y-%m-%d %H:%M UTC')"
-
-          # 关键：先拉取远程最新代码，避免 push 被拒绝
+          
+          # ⭐ 只处理 valid.txt，不再要 invalid.txt 和 summary.txt
+          git add valid.txt
+          git diff --cached --quiet || git commit -m "更新有效直播源 $(date -u +'%Y-%m-%d %H:%M UTC')"
+          
+          # 先拉取远程最新代码，避免 push 被拒绝
           git pull --rebase origin main
-
+          
           git push
 
       - name: Upload results (artifact)
         uses: actions/upload-artifact@v4
         with:
           name: live-results
-          path: |
-            valid.txt
-            invalid.txt
-            summary.txt
+          path: valid.txt
