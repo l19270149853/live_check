@@ -16,6 +16,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           persist-credentials: true   # 保留 token 用于 push
+          fetch-depth: 0              # 拉取完整历史，便于 rebase
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -36,6 +37,10 @@ jobs:
           cp valid.txt invalid.txt summary.txt results/ 2>/dev/null || true
           git add results/ valid.txt invalid.txt summary.txt 2>/dev/null || true
           git diff --cached --quiet || git commit -m "更新直播源检测结果 $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+          # 关键：先拉取远程最新代码，避免 push 被拒绝
+          git pull --rebase origin main
+
           git push
 
       - name: Upload results (artifact)
