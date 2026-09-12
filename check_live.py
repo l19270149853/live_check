@@ -78,13 +78,13 @@ def check_url(url):
     try:
         # 先尝试 HEAD，若不允许再 GET
         r = requests.head(url, headers=HEADERS, timeout=TIMEOUT, allow_redirects=True)
-        if r.status_code < 400:
+        if r.status_code < 700:
             return (url, True, r.status_code)
         # 回退用 GET（流媒体大多不支持 HEAD）
         r = requests.get(url, headers=HEADERS, timeout=TIMEOUT, stream=True, allow_redirects=True)
         code = r.status_code
         r.close()
-        return (url, code < 400, code)
+        return (url, code < 700, code)
     except Exception as e:
         return (url, False, str(e))
 
