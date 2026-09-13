@@ -29,22 +29,16 @@ jobs:
       - name: Run check script
         run: python check_live.py
 
-      - name: Commit & push results
-        run: |
-          git config user.name "l19270149853"
-          git config user.email "362213335lkh@gmail.com"
-          
-          # ⭐ 只处理 valid.txt，不再要 invalid.txt 和 summary.txt
-          git add valid.txt
-          git diff --cached --quiet || git commit -m "更新有效直播源 $(date -u +'%Y-%m-%d %H:%M UTC')"
-          
-          # 先拉取远程最新代码，避免 push 被拒绝
-          git pull --rebase origin main
-          
-          git push
-
-      - name: Upload results (artifact)
-        uses: actions/upload-artifact@v4
-        with:
-          name: live-results
-          path: valid.txt
+      - - name: Commit & push results
+  run: |
+    git config user.name "l19270149853"
+    git config user.email "362213335lkh@gmail.com"
+    
+    git add valid.txt
+    git diff --cached --quiet || git commit -m "更新有效直播源 $(date -u +'%Y-%m-%d %H:%M UTC')"
+    
+    # 临时保存剩余的未暂存改动，清空工作区
+    git stash --include-untracked
+    
+    git pull --rebase origin main
+    git push
